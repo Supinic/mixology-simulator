@@ -10,7 +10,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "run": "yarn build && node ./build/index.js",
+    "dev": "yarn build && node ./build/index.js",
     "lint": "eslint ."
   },
   "devDependencies": {
