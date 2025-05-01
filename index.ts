@@ -41,8 +41,8 @@ for (const { name, ruleset } of rulesetDefinitions) {
 
         // console.log({
         //     ...result,
-        //     potionsAvailable: request.map(i => i.potion).join(" "),
-        //     potionsTaken: items.map(i => i.potion).join(" "),
+        //     potionsAvailable: request.map(i => `${i.station} ${i.potion}`).join(" "),
+        //     potionsTaken: items.map(i => `${i.station} ${i.potion}`).join(" "),
         // });
     }
 

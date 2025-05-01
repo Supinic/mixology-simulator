@@ -203,7 +203,7 @@ export const addResin = <const T extends ResinObject> (mutated: T, added: ResinO
 
 export const calculateResults = (context: Context, request: FilteredRequest) => {
     const stations = request.map(i => i.station);
-    const walkingTime = determineTravelTime(stations) + BELT_TO_LEVERS_WALK_TIME;
+    const walkingTime = determineTravelTime(stations) + BELT_TO_LEVERS_WALK_TIME + 1;
 
     let preparingTime = 0;
     let craftingTime = 0;
@@ -219,7 +219,7 @@ export const calculateResults = (context: Context, request: FilteredRequest) => 
         experience += potionData.experience;
 
         preparingTime += 3 + 2; // 3 ticks to mix, 2 ticks to grab
-        craftingTime += craftingTimes[item.station][context.activity];
+        craftingTime += craftingTimes[item.station][context.activity] + 1; // 1 tick to begin crafting
     }
 
     const itemAmount = request.length;
