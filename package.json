@@ -1,0 +1,19 @@
+{
+  "name": "mixology-simulator",
+  "version": "0.1.0",
+  "type": "module",
+  "author": "Supinic <supinic@protonmail.com>",
+  "repository": "github:Supinic/mixology-simulator",
+  "license": "MIT",
+  "engines": {
+    "node": ">= 22.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "eslint": "^9.25.1"
+  },
+  "packageManager": "yarn@4.9.0"
+}
