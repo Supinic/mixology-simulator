@@ -194,6 +194,13 @@ const percentageMultiplier = { 1: 1.0, 2: 1.2, 3: 1.4 };
 const isValidItemAmount = (input: number): input is 1 | 2 | 3 => (input >= 1 && input <= 3);
 const BELT_TO_LEVERS_WALK_TIME = 4; // 4 ticks to walk from the delivery conveyor back to the resin levers
 
+type ResinObject = Record<Resin, number>;
+export const addResin = <const T extends ResinObject> (mutated: T, added: ResinObject): void => {
+    mutated.M += added.M;
+    mutated.A += added.A;
+    mutated.L += added.L;
+};
+
 export const calculateResults = (context: Context, request: FilteredRequest) => {
     const stations = request.map(i => i.station);
     const walkingTime = determineTravelTime(stations) + BELT_TO_LEVERS_WALK_TIME;
@@ -207,9 +214,7 @@ export const calculateResults = (context: Context, request: FilteredRequest) => 
         const potionData = potionsDefinition[item.potion];
 
         const potionResin = potionData.resin;
-        baseResin.A += potionResin.A;
-        baseResin.M += potionResin.M;
-        baseResin.L += potionResin.L;
+        addResin(baseResin, potionResin);
 
         experience += potionData.experience;
 

@@ -1,5 +1,5 @@
 import { control, experienceFocus, type RulesetDefinition } from "./rules.js";
-import { type Context, rollPotionsRequest, applyRules, calculateResults, type Combination } from "./definitions.js";
+import { type Context, addResin, rollPotionsRequest, applyRules, calculateResults, type Combination } from "./definitions.js";
 
 const rulesetDefinitions = [
     control,
@@ -30,10 +30,7 @@ for (const { name, ruleset } of rulesetDefinitions) {
 
         counters.time += result.time.crafting + result.time.preparing + result.time.walking;
         counters.experience += result.experience;
-
-        counters.resin.M += result.resin.M;
-        counters.resin.A += result.resin.A;
-        counters.resin.L += result.resin.L;
+        addResin(counters.resin, result.resin);
 
         for (const original of request) {
             potionsReceived[original.potion] = (potionsReceived[original.potion] ?? 0) + 1;
