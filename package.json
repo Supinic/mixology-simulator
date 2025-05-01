@@ -13,7 +13,9 @@
     "lint": "eslint ."
   },
   "devDependencies": {
-    "eslint": "^9.25.1"
+    "@types/node": "^22.15.3",
+    "eslint": "^9.25.1",
+    "typescript": "^5.8.3"
   },
   "packageManager": "yarn@4.9.0"
 }
