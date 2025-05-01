@@ -9,7 +9,7 @@ const typedFromEntries = <T extends string | number | symbol, U> (entries: [T, U
 
 type FullResin = "Mox" | "Aga" | "Lye";
 type Resin = "M" | "A" | "L";
-type Combination = "MMM" | "AAA" | "LLL" | "MMA" | "MML" | "AAM" | "ALA" | "MLL" | "ALL" | "MAL";
+export type Combination = "MMM" | "AAA" | "LLL" | "MMA" | "MML" | "AAM" | "ALA" | "MLL" | "ALL" | "MAL";
 
 type PotionData = {
     name: string;
@@ -25,70 +25,70 @@ export const potionsDefinition = {
         level: 60,
         experience: 190,
         weight: 5,
-        resin: {M: 0, A: 20, L: 0}
+        resin: { M: 0, A: 20, L: 0 }
     },
     MMM: {
         name: "Mammoth-Might Mix",
         level: 60,
         experience: 190,
         weight: 5,
-        resin: {M: 20, A: 0, L: 0}
+        resin: { M: 20, A: 0, L: 0 }
     },
     LLL: {
         name: "Liplack Liquor",
         level: 60,
         experience: 190,
         weight: 5,
-        resin: {M: 0, A: 0, L: 20}
+        resin: { M: 0, A: 0, L: 20 }
     },
     MMA: {
         name: "Mystic Mana Amalgam",
         level: 63,
         experience: 215,
         weight: 4,
-        resin: {M: 20, A: 10, L: 0}
+        resin: { M: 20, A: 10, L: 0 }
     },
     MML: {
         name: "Marley's Moonlight",
         level: 66,
         experience: 240,
         weight: 4,
-        resin: {M: 20, A: 0, L: 10}
+        resin: { M: 20, A: 0, L: 10 }
     },
     AAM: {
         name: "Azure Aura Mix",
         level: 69,
         experience: 265,
         weight: 4,
-        resin: {M: 10, A: 20, L: 0}
+        resin: { M: 10, A: 20, L: 0 }
     },
     ALA: {
         name: "Aqualux Amalgam",
         level: 72,
         experience: 290,
         weight: 4,
-        resin: {M: 0, A: 20, L: 10}
+        resin: { M: 0, A: 20, L: 10 }
     },
     MLL: {
         name: "Megalite Liquid",
         level: 75,
         experience: 315,
         weight: 4,
-        resin: {M: 10, A: 0, L: 20}
+        resin: { M: 10, A: 0, L: 20 }
     },
     ALL: {
         name: "Anti-Leech Lotion",
         level: 78,
         experience: 340,
         weight: 4,
-        resin: {M: 0, A: 10, L: 20}
+        resin: { M: 0, A: 10, L: 20 }
     },
     MAL: {
         name: "Mixalot",
         level: 81,
         experience: 365,
         weight: 3,
-        resin: {M: 20, A: 20, L: 20}
+        resin: { M: 20, A: 20, L: 20 }
     }
 } as const satisfies Record<Combination, PotionData>;
 
@@ -192,10 +192,11 @@ export const applyRules = (context: Context, request: PotionRequest, rules: Stra
 
 const percentageMultiplier = { 1: 1.0, 2: 1.2, 3: 1.4 };
 const isValidItemAmount = (input: number): input is 1 | 2 | 3 => (input >= 1 && input <= 3);
+const BELT_TO_LEVERS_WALK_TIME = 4; // 4 ticks to walk from the delivery conveyor back to the resin levers
 
 export const calculateResults = (context: Context, request: FilteredRequest) => {
     const stations = request.map(i => i.station);
-    const walkingTime = determineTravelTime(stations);
+    const walkingTime = determineTravelTime(stations) + BELT_TO_LEVERS_WALK_TIME;
 
     let preparingTime = 0;
     let craftingTime = 0;

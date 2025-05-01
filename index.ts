@@ -1,12 +1,15 @@
-import { control, experienceFocus } from "./rules.js";
-import { type Context, rollPotionsRequest, applyRules, calculateResults } from "./definitions.js";
+import { control, experienceFocus, type RulesetDefinition } from "./rules.js";
+import { type Context, rollPotionsRequest, applyRules, calculateResults, type Combination } from "./definitions.js";
 
-const rulesets = [
+const rulesetDefinitions = [
     control,
     experienceFocus
-];
+] satisfies RulesetDefinition[];
 
-for (const ruleset of rulesets) {
+for (const { name, ruleset } of rulesetDefinitions) {
+    const potionsReceived: Partial<Record<Combination, number>> = {};
+    const potionsDone: Partial<Record<Combination, number>> = {};
+
     const context: Context = {
         activity: "active",
         paste: { M: 0, A: 0, L: 0 },
@@ -16,6 +19,7 @@ for (const ruleset of rulesets) {
     const counters = {
         time: 0,
         experience: 0,
+        paste: { M: 0, A: 0, L: 0 },
         resin: { M: 0, A: 0, L: 0 }
     };
 
@@ -26,9 +30,17 @@ for (const ruleset of rulesets) {
 
         counters.time += result.time.crafting + result.time.preparing + result.time.walking;
         counters.experience += result.experience;
+
         counters.resin.M += result.resin.M;
         counters.resin.A += result.resin.A;
         counters.resin.L += result.resin.L;
+
+        for (const original of request) {
+            potionsReceived[original.potion] = (potionsReceived[original.potion] ?? 0) + 1;
+        }
+        for (const filtered of items) {
+            potionsDone[filtered.potion] = (potionsDone[filtered.potion] ?? 0) + 1;
+        }
 
         // console.log({
         //     ...result,
@@ -44,7 +56,9 @@ for (const ruleset of rulesets) {
         L: Math.floor(counters.resin.L / counters.time * 6000)
     };
 
-    console.log({
+    console.log(name, {
+        // potionsReceived,
+        // potionsDone,
         experiencePerHour,
         resinPerHour
     });
