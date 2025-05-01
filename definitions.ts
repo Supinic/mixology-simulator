@@ -7,8 +7,8 @@ const typedFromEntries = <T extends string | number | symbol, U> (entries: [T, U
     Object.fromEntries(entries) as Record<T, U>
 );
 
-type Resin = "Mox" | "Aga" | "Lye";
-type ShortType = "M" | "A" | "L";
+type FullResin = "Mox" | "Aga" | "Lye";
+type Resin = "M" | "A" | "L";
 type Combination = "MMM" | "AAA" | "LLL" | "MMA" | "MML" | "AAM" | "ALA" | "MLL" | "ALL" | "MAL";
 
 type PotionData = {
@@ -16,7 +16,7 @@ type PotionData = {
     level: number;
     experience: number;
     weight: number;
-    points: Record<ShortType, number>;
+    resin: Record<Resin, number>;
 };
 
 export const potionsDefinition = {
@@ -25,84 +25,85 @@ export const potionsDefinition = {
         level: 60,
         experience: 190,
         weight: 5,
-        points: {M: 0, A: 20, L: 0}
+        resin: {M: 0, A: 20, L: 0}
     },
     MMM: {
         name: "Mammoth-Might Mix",
         level: 60,
         experience: 190,
         weight: 5,
-        points: {M: 20, A: 0, L: 0}
+        resin: {M: 20, A: 0, L: 0}
     },
     LLL: {
         name: "Liplack Liquor",
         level: 60,
         experience: 190,
         weight: 5,
-        points: {M: 0, A: 0, L: 20}
+        resin: {M: 0, A: 0, L: 20}
     },
     MMA: {
         name: "Mystic Mana Amalgam",
         level: 63,
         experience: 215,
         weight: 4,
-        points: {M: 20, A: 10, L: 0}
+        resin: {M: 20, A: 10, L: 0}
     },
     MML: {
         name: "Marley's Moonlight",
         level: 66,
         experience: 240,
         weight: 4,
-        points: {M: 20, A: 0, L: 10}
+        resin: {M: 20, A: 0, L: 10}
     },
     AAM: {
         name: "Azure Aura Mix",
         level: 69,
         experience: 265,
         weight: 4,
-        points: {M: 10, A: 20, L: 0}
+        resin: {M: 10, A: 20, L: 0}
     },
     ALA: {
         name: "Aqualux Amalgam",
         level: 72,
         experience: 290,
         weight: 4,
-        points: {M: 0, A: 20, L: 10}
+        resin: {M: 0, A: 20, L: 10}
     },
     MLL: {
         name: "Megalite Liquid",
         level: 75,
         experience: 315,
         weight: 4,
-        points: {M: 10, A: 0, L: 20}
+        resin: {M: 10, A: 0, L: 20}
     },
     ALL: {
         name: "Anti-Leech Lotion",
         level: 78,
         experience: 340,
         weight: 4,
-        points: {M: 0, A: 10, L: 20}
+        resin: {M: 0, A: 10, L: 20}
     },
     MAL: {
         name: "Mixalot",
         level: 81,
         experience: 365,
         weight: 3,
-        points: {M: 20, A: 20, L: 20}
+        resin: {M: 20, A: 20, L: 20}
     }
 } as const satisfies Record<Combination, PotionData>;
 
-type CraftingStation = "Crystallizer" | "Homogenizer" | "Concentrator";
-type ShortCraft = "Cr" | "Ho" | "Co";
-const craftingStations = ["Cr", "Ho", "Co"] as const;
+type FullStation = "Crystallizer" | "Homogenizer" | "Concentrator";
+type Station = "Cr" | "Ho" | "Co";
+const craftingStations = ["Cr", "Ho", "Co"] as const satisfies Station[];
 
-export const craftingTimes: Record<ShortCraft, { lazy: number; active: number | number[]; }> = {
+type CraftingTime = { lazy: number; active: number /* | number[] */ }
+export const craftingTimes = {
     Co: { lazy: Infinity, active: 7 },
     Cr: { lazy: Infinity, active: 9 },
-    Ho: { lazy: Infinity, active: [6, 8] }
-};
+    Ho: { lazy: Infinity, active: 7 /* technically [6, 8] but averages to 7 */ }
+} as const satisfies Record<Station, CraftingTime>;
 
-export const determineTravelTime = (stations: ShortCraft[]): number => {
+export const determineTravelTime = (stations: Station[]): number => {
     if (stations.length === 0 || stations.length > 3) {
         throw new Error("Assert error: Stations length outside of range <1, 3>");
     }
@@ -131,10 +132,10 @@ export const determineTravelTime = (stations: ShortCraft[]): number => {
 
 type Craft = {
     potion: Combination;
-    station: ShortCraft;
+    station: Station;
 };
 type PotionRequest = [Craft, Craft, Craft];
-type FilteredRequest = [Craft] | [Craft, Craft] | [Craft, Craft, Craft];
+type FilteredRequest = Craft[];
 
 let currentWeight = 0;
 const weightEntries: [Combination, number][] = typedEntries(potionsDefinition).map(i => {
@@ -151,7 +152,7 @@ export const rollPotionsRequest = (): PotionRequest => {
         const station = craftingStations[stationIndex];
 
         let potion: Combination | null = null;
-        const randomWeight = randomInt(0, maxWeight + 1);
+        const randomWeight = randomInt(1, maxWeight + 1);
         for (const [combination, potionWeight] of weightEntries) {
             if (randomWeight <= potionWeight) {
                 potion = combination;
@@ -169,7 +170,74 @@ export const rollPotionsRequest = (): PotionRequest => {
     return result as PotionRequest;
 }
 
-type StrategyRule = unknown;
-export const applyRules = (request: PotionRequest, rules: StrategyRule[]): FilteredRequest => {
-    // ... todo ...
+export type Context = {
+    activity: "lazy" | "active";
+    paste: Record<Resin, number>;
+    resin: Record<Resin, number>;
+};
+export type StrategyRule = (context: Context, request: PotionRequest) => FilteredRequest | false;
+export const applyRules = (context: Context, request: PotionRequest, rules: StrategyRule[]): FilteredRequest => {
+    let currentRequest: FilteredRequest = request;
+    for (const rule of rules) {
+        const ruleResult = rule(context, request);
+        if (ruleResult === false) {
+            continue;
+        }
+
+        return ruleResult;
+    }
+
+    return currentRequest;
+}
+
+const percentageMultiplier = { 1: 1.0, 2: 1.2, 3: 1.4 };
+const isValidItemAmount = (input: number): input is 1 | 2 | 3 => (input >= 1 && input <= 3);
+
+export const calculateResults = (context: Context, request: FilteredRequest) => {
+    const stations = request.map(i => i.station);
+    const walkingTime = determineTravelTime(stations);
+
+    let preparingTime = 0;
+    let craftingTime = 0;
+    let experience = 0;
+    const baseResin = { M: 0, A: 0, L: 0 };
+
+    for (const item of request) {
+        const potionData = potionsDefinition[item.potion];
+
+        const potionResin = potionData.resin;
+        baseResin.A += potionResin.A;
+        baseResin.M += potionResin.M;
+        baseResin.L += potionResin.L;
+
+        experience += potionData.experience;
+
+        preparingTime += 3 + 2; // 3 ticks to mix, 2 ticks to grab
+        craftingTime += craftingTimes[item.station][context.activity];
+    }
+
+    const itemAmount = request.length;
+    if (!isValidItemAmount(itemAmount)) {
+        throw new Error(`Invalid item amount: ${itemAmount}`);
+    }
+
+    const bonus = percentageMultiplier[itemAmount];
+    const resin = {
+        M: baseResin.M * bonus,
+        A: baseResin.A * bonus,
+        L: baseResin.L * bonus
+    };
+
+    return {
+        resin,
+        experience,
+        itemAmount,
+        baseResin,
+        bonus,
+        time: {
+            walking: walkingTime,
+            preparing: preparingTime,
+            crafting: craftingTime
+        }
+    };
 }
