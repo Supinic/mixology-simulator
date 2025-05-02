@@ -194,7 +194,7 @@ const percentageMultiplier = { 1: 1.0, 2: 1.2, 3: 1.4 };
 const isValidItemAmount = (input: number): input is 1 | 2 | 3 => (input >= 1 && input <= 3);
 const BELT_TO_LEVERS_WALK_TIME = 4; // 4 ticks to walk from the delivery conveyor back to the resin levers
 
-type ResinObject = Record<Resin, number>;
+export type ResinObject = Record<Resin, number>;
 export const addResin = <const T extends ResinObject> (mutated: T, added: ResinObject): void => {
     mutated.M += added.M;
     mutated.A += added.A;

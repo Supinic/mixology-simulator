@@ -1,9 +1,17 @@
-import { control, experienceFocus, type RulesetDefinition } from "./rules.js";
-import { type Context, addResin, rollPotionsRequest, applyRules, calculateResults, type Combination } from "./definitions.js";
+import { control, experienceFocus, resinFocus, type RulesetDefinition } from "./rules.js";
+import {
+    type Context,
+    type Combination,
+    addResin,
+    rollPotionsRequest,
+    applyRules,
+    calculateResults
+} from "./definitions.js";
 
 const rulesetDefinitions = [
     control,
-    experienceFocus
+    experienceFocus,
+    resinFocus
 ] satisfies RulesetDefinition[];
 
 for (const { name, ruleset } of rulesetDefinitions) {
