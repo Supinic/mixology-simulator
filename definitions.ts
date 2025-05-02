@@ -220,11 +220,15 @@ export const calculateResults = (context: Context, request: FilteredRequest) => 
     let craftingTime = 0;
     let experience = 0;
     const baseResin = { M: 0, A: 0, L: 0 };
+    const pasteUsed = { M: 0, A: 0, L: 0 };
 
     for (const item of request) {
         const potionData = potionsDefinition[item.potion];
 
         const potionResin = potionData.resin;
+        const potionCost = potionData.cost;
+
+        addResin(pasteUsed, potionCost);
         addResin(baseResin, potionResin);
 
         experience += potionData.experience;
@@ -247,6 +251,7 @@ export const calculateResults = (context: Context, request: FilteredRequest) => 
 
     return {
         resin,
+        pasteUsed,
         experience,
         itemAmount,
         baseResin,
