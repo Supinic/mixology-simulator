@@ -67,4 +67,4 @@ export const rewards = [
         short: "aldarium",
         price: { M: 80, A: 60, L: 90 }
     },
-] satisfies Reward[];
+] as const satisfies Reward[];

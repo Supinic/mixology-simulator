@@ -32,6 +32,46 @@ export const resinFocus = {
     ]
 } satisfies RulesetDefinition;
 
+export const moxLyeFocus = {
+    name: "moxLyeFocus",
+    ruleset: [
+        doAllWhenMixalot,
+        (context, request) => {
+            const lyeItems = request.filter(i => i.potion.includes("M") || i.potion.includes("L"));
+            return (lyeItems.length === 0) ? false : lyeItems;
+        },
+        (context, request) => [request[0]]
+    ]
+} satisfies RulesetDefinition;
+
+export const simpleLyeFocus = {
+    name: "simpleLyeFocus",
+    ruleset: [
+        doAllWhenMixalot,
+        (context, request) => {
+            const lyeItems = request.filter(i => i.potion.includes("L"));
+            return (lyeItems.length === 0) ? false : lyeItems;
+        },
+        (context, request) => [request[0]]
+    ]
+} satisfies RulesetDefinition;
+
+export const involvedLyeFocus = {
+    name: "involvedLyeFocus",
+    ruleset: [
+        doAllWhenMixalot,
+        (context, request) => {
+            const lyeItems = request.filter(i => i.potion.includes("L"));
+            if (lyeItems.length >= 2) {
+                return request;
+            }
+
+            return (lyeItems.length === 0) ? false : lyeItems;
+        },
+        (context, request) => [request[0]]
+    ]
+} satisfies RulesetDefinition;
+
 export const experienceFocus = {
     name: "experienceFocus",
     ruleset: [
@@ -67,3 +107,12 @@ export const experienceFocus = {
         (context, request) => [request[0]]
     ]
 } satisfies RulesetDefinition;
+
+export default [
+    control,
+    resinFocus,
+    moxLyeFocus,
+    experienceFocus,
+    simpleLyeFocus,
+    involvedLyeFocus,
+] satisfies RulesetDefinition[];
