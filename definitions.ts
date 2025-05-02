@@ -17,6 +17,7 @@ type PotionData = {
     experience: number;
     weight: number;
     resin: Record<Resin, number>;
+    cost: Record<Resin, number>;
 };
 
 export const potionsDefinition = {
@@ -25,70 +26,80 @@ export const potionsDefinition = {
         level: 60,
         experience: 190,
         weight: 5,
-        resin: { M: 0, A: 20, L: 0 }
+        resin: { M: 0, A: 20, L: 0 },
+        cost: { M: 0, A: 30, L: 0 }
     },
     MMM: {
         name: "Mammoth-Might Mix",
         level: 60,
         experience: 190,
         weight: 5,
-        resin: { M: 20, A: 0, L: 0 }
+        resin: { M: 20, A: 0, L: 0 },
+        cost: { M: 30, A: 0, L: 0 }
     },
     LLL: {
         name: "Liplack Liquor",
         level: 60,
         experience: 190,
         weight: 5,
-        resin: { M: 0, A: 0, L: 20 }
+        resin: { M: 0, A: 0, L: 20 },
+        cost: { M: 0, A: 0, L: 30 }
     },
     MMA: {
         name: "Mystic Mana Amalgam",
         level: 63,
         experience: 215,
         weight: 4,
-        resin: { M: 20, A: 10, L: 0 }
+        resin: { M: 20, A: 10, L: 0 },
+        cost: { M: 20, A: 10, L: 0 }
     },
     MML: {
         name: "Marley's Moonlight",
         level: 66,
         experience: 240,
         weight: 4,
-        resin: { M: 20, A: 0, L: 10 }
+        resin: { M: 20, A: 0, L: 10 },
+        cost: { M: 20, A: 0, L: 10 }
     },
     AAM: {
         name: "Azure Aura Mix",
         level: 69,
         experience: 265,
         weight: 4,
-        resin: { M: 10, A: 20, L: 0 }
+        resin: { M: 10, A: 20, L: 0 },
+        cost: { M: 10, A: 20, L: 0 }
     },
     ALA: {
         name: "Aqualux Amalgam",
         level: 72,
         experience: 290,
         weight: 4,
-        resin: { M: 0, A: 20, L: 10 }
+        resin: { M: 0, A: 20, L: 10 },
+        cost: { M: 0, A: 20, L: 10 }
     },
     MLL: {
         name: "Megalite Liquid",
         level: 75,
         experience: 315,
         weight: 4,
-        resin: { M: 10, A: 0, L: 20 }
+        resin: { M: 10, A: 0, L: 20 },
+        cost: { M: 10, A: 0, L: 20 }
     },
     ALL: {
         name: "Anti-Leech Lotion",
         level: 78,
         experience: 340,
         weight: 4,
-        resin: { M: 0, A: 10, L: 20 }
+        resin: { M: 0, A: 10, L: 20 },
+        cost: { M: 0, A: 10, L: 20 }
     },
     MAL: {
         name: "Mixalot",
         level: 81,
         experience: 365,
         weight: 3,
-        resin: { M: 20, A: 20, L: 20 }
+        resin: { M: 20, A: 20, L: 20 },
+        cost: { M: 10, A: 10, L: 10 }
     }
 } as const satisfies Record<Combination, PotionData>;
 
